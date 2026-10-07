@@ -4,3 +4,9 @@ dist
 .env.*
 .manus-logs
 .vercel
+node_modules
+dist
+.env
+.env.*
+.manus-logs
+.vercel
