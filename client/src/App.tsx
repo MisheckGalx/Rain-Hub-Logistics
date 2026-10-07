@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { Route, Switch, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -12,36 +13,53 @@ import AboutPage from "./pages/AboutPage";
 import FleetPage from "./pages/FleetPage";
 import ClientsPage from "./pages/ClientsPage";
 import ContactPage from "./pages/ContactPage";
+import NotFound from "./pages/NotFound";
 
-type Page = "home" | "services" | "about" | "fleet" | "clients" | "contact";
+const paths: Record<string, string> = {
+  home: "/",
+  services: "/services",
+  about: "/about",
+  fleet: "/fleet",
+  clients: "/clients",
+  contact: "/contact",
+};
+
+const titles: Record<string, string> = {
+  "/": "Rain Hub Logistics — Freight, customs and truck hire from Midrand",
+  "/services": "Services — Rain Hub Logistics",
+  "/fleet": "Our fleet — Rain Hub Logistics",
+  "/about": "About — Rain Hub Logistics",
+  "/clients": "Clients — Rain Hub Logistics",
+  "/contact": "Get a quote — Rain Hub Logistics",
+};
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [location, setLocation] = useLocation();
 
-  const navigate = (page: Page) => {
-    setCurrentPage(page);
-  };
+  // Pages not yet rebuilt still call onNavigate("services") etc. — map that onto real URLs.
+  const onNavigate = (page: string) => setLocation(paths[page] ?? "/");
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case "home":      return <Home onNavigate={navigate} />;
-      case "services":  return <ServicesPage onNavigate={navigate} />;
-      case "about":     return <AboutPage onNavigate={navigate} />;
-      case "fleet":     return <FleetPage onNavigate={navigate} />;
-      case "clients":   return <ClientsPage onNavigate={navigate} />;
-      case "contact":   return <ContactPage />;
-      default:          return <Home onNavigate={navigate} />;
-    }
-  };
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    document.title = titles[location] ?? "Page not found — Rain Hub Logistics";
+  }, [location]);
 
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Navigation currentPage={currentPage} onNavigate={navigate} />
-          {renderPage()}
-          <Footer onNavigate={navigate} />
+          <Navigation />
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/services">{() => <ServicesPage onNavigate={onNavigate} />}</Route>
+            <Route path="/about">{() => <AboutPage onNavigate={onNavigate} />}</Route>
+            <Route path="/fleet">{() => <FleetPage onNavigate={onNavigate} />}</Route>
+            <Route path="/clients">{() => <ClientsPage onNavigate={onNavigate} />}</Route>
+            <Route path="/contact" component={ContactPage} />
+            <Route component={NotFound} />
+          </Switch>
+          <Footer />
           <WhatsAppButton />
         </TooltipProvider>
       </ThemeProvider>

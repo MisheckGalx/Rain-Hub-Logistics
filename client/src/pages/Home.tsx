@@ -1,318 +1,177 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowRight } from "lucide-react";
+import { useReveal } from "@/hooks/useReveal";
+import { company, whatsappUrl } from "@/lib/company";
 
-type Page = "home" | "services" | "about" | "fleet" | "clients" | "contact";
-
-interface HomeProps {
-  onNavigate: (page: Page) => void;
-}
-
-/* ─────────────────────────────────────────────────────────────
-   HERO SLIDES
-   Each slide = one photo + one message.
-   To add your own photos: upload them to client/public/images/
-   and change the `image` line (e.g. "/images/fleet-2.jpeg").
-   `position` = which part of the photo stays in view,
-   `origin`   = where the slow zoom drifts toward.
-   ───────────────────────────────────────────────────────────── */
-type Slide = {
-  image: string;
-  position: string;
-  origin: string;
-  zoomFrom: number;
-  zoomTo: number;
-  title: [string, string];
-  text: string;
-  primary: { label: string; page: Page };
-  secondary: { label: string; page: Page };
-};
-
-const SLIDE_MS = 7000;
-
-const slides: Slide[] = [
-  {
-    image: "/images/home-hero.jpeg",
-    position: "72% 55%",
-    origin: "70% 55%",
-    zoomFrom: 1,
-    zoomTo: 1.08,
-    title: ["Move smarter.", "Deliver faster."],
-    text: "Road, sea and air freight across the SADC region, with customs clearance handled for you.",
-    primary: { label: "Get a free quote", page: "contact" },
-    secondary: { label: "Our services", page: "services" },
-  },
-  {
-    image: "/images/home-hero.jpeg",
-    position: "75% 50%",
-    origin: "72% 48%",
-    zoomFrom: 1.18,
-    zoomTo: 1.3,
-    title: ["Trucks up to 36 tons,", "on the road today."],
-    text: "Professional drivers and a reliable fleet moving your cargo across South Africa and the wider region.",
-    primary: { label: "See our fleet", page: "fleet" },
-    secondary: { label: "Get a free quote", page: "contact" },
-  },
-  {
-    image: "/images/home-hero.jpeg",
-    position: "20% 60%",
-    origin: "15% 65%",
-    zoomFrom: 1.05,
-    zoomTo: 1.2,
-    title: ["Customs sorted.", "Cargo moving."],
-    text: "We handle the customs paperwork so your freight keeps moving across borders.",
-    primary: { label: "Talk to us", page: "contact" },
-    secondary: { label: "Customs clearance", page: "services" },
-  },
+const services = [
+  { name: "Road freight", line: "Regional and cross-border trucking across the SADC region." },
+  { name: "Sea freight", line: "Imports and exports through Durban, Cape Town and East London." },
+  { name: "Air freight", line: "Fast, secure cargo when it can't wait." },
+  { name: "Customs clearance", line: "Documentation, classification and SARS compliance, handled for you." },
+  { name: "Truck hire", line: "8 to 36 tonne trucks with professional drivers, for a trip or a contract." },
 ];
 
-const trust = [
-  { num: "36T", label: "Fleet capacity" },
-  { num: "5+", label: "Services" },
-  { num: "SADC", label: "Region coverage" },
-  { num: "24/7", label: "Support" },
+const steps = [
+  { n: "01", title: "Tell us what's moving", text: "Where it's going from and to, and roughly how much. A short form or a WhatsApp message is enough." },
+  { n: "02", title: "We come back with a price", text: "A real person calls or messages you with a quote, within 24 hours." },
+  { n: "03", title: "We move it", text: "Our drivers and clearing team take it from there, and you hear from us if anything changes." },
 ];
 
-const whyCards = [
-  { icon: "🛰️", title: "Technology Integration", desc: "Advanced logistics software for route optimization, inventory tracking, and real-time shipment visibility with digital documentation." },
-  { icon: "🌿", title: "Sustainability Commitment", desc: "Green logistics practices including route optimization to reduce emissions, energy-efficient vehicles, and eco-friendly packaging." },
-  { icon: "🎯", title: "Professional Expertise", desc: "Experienced transport coordinators and professional drivers with deep knowledge of regional logistics and customs procedures." },
-  { icon: "🔗", title: "Comprehensive Solutions", desc: "One-stop solutions combining freight transportation, customs clearance, and truck hire for seamless SADC cargo movement." },
-];
+// Shown as plain names until each client has agreed to be listed (and ideally supplied a logo).
+const clients = ["Aberdare Cables", "Manitou", "Insimbi", "LiuGong Machinery SA", "International Trucks", "Freightliner"];
 
-const clientNames = ["Aberdare Cables", "Manitou", "Insimbi", "LiuGong Machinery SA", "International Trucks", "Freightliner"];
-
-export default function Home({ onNavigate }: HomeProps) {
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const touchX = useRef<number | null>(null);
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  const go = useCallback((i: number) => setIndex((i + slides.length) % slides.length), []);
-
-  // auto-advance (restarts after every manual change, pauses on hover/focus,
-  // and stays still for people who prefer reduced motion)
-  useEffect(() => {
-    if (paused) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setTimeout(() => setIndex((i) => (i + 1) % slides.length), SLIDE_MS);
-    return () => window.clearTimeout(t);
-  }, [index, paused]);
-
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in-view"); }),
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll(".scroll-animate").forEach((el) => observerRef.current?.observe(el));
-    return () => observerRef.current?.disconnect();
-  }, []);
-
-  const nav = (page: Page) => {
-    onNavigate(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const current = slides[index];
+export default function Home() {
+  useReveal();
 
   return (
     <main>
-      <style>{`
-        .hero-img { transform: scale(var(--z0)); }
-        .hero-img:not(.hero-active) { transform: scale(var(--z1)); }
-        .hero-img.hero-active { animation: heroZoom 7.5s ease-out forwards; }
-        @keyframes heroZoom { from { transform: scale(var(--z0)); } to { transform: scale(var(--z1)); } }
-        .hero-copy { animation: heroCopy .8s cubic-bezier(.2,.7,.2,1) both; }
-        @keyframes heroCopy { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-        @media (prefers-reduced-motion: reduce) {
-          .hero-img.hero-active, .hero-copy { animation: none; }
-          .hero-img { transition: none; }
-        }
-      `}</style>
+      {/* ── Hero: one photo, one message, one action ── */}
+      <section className="relative isolate flex flex-col overflow-hidden bg-[#0B1628] pt-14 text-white md:h-[92svh] md:min-h-[620px] md:flex-row md:items-end md:pt-0">
+        {/* Phone: photo on top, words below. Wide screens: photo behind the words, drawn wider than the screen
+            and pinned left so the truck slides right and the copy sits on open road. */}
+        <div className="relative h-[46svh] min-h-[280px] w-full md:absolute md:inset-y-0 md:left-0 md:-z-20 md:h-auto md:w-[135%]">
+          <picture>
+            <source srcSet="/images/home-hero.webp" type="image/webp" />
+            <img
+              src="/images/home-hero.jpeg"
+              alt="A Rain Hub truck parked beside a quiet open road, with veld and hills behind"
+              fetchPriority="high"
+              className="h-full w-full object-cover object-[62%_55%] md:object-[50%_42%]"
+            />
+          </picture>
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0B1628] to-transparent md:hidden" />
+        </div>
+        <div className="absolute inset-0 -z-10 hidden bg-gradient-to-tr from-[#0B1628]/85 via-[#0B1628]/25 to-transparent md:block" />
 
-      {/* ── HERO ── */}
-      <section
-        className="relative h-[100svh] min-h-[640px] overflow-hidden bg-[#0B1628]"
-        aria-roledescription="carousel"
-        aria-label="Rain Hub Logistics highlights"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
-        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
-        onTouchEnd={(e) => {
-          if (touchX.current === null) return;
-          const dx = e.changedTouches[0].clientX - touchX.current;
-          touchX.current = null;
-          if (Math.abs(dx) > 50) go(index + (dx < 0 ? 1 : -1));
-        }}
-      >
-        {/* photos */}
-        {slides.map((s, i) => (
-          <img
-            key={i}
-            src={s.image}
-            alt={i === 0 ? "A Rain Hub Logistics truck on the open road" : ""}
-            aria-hidden={i !== index}
-            loading={i === 0 ? "eager" : "lazy"}
-            className={`hero-img absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-              i === index ? "hero-active opacity-100" : "opacity-0"
-            }`}
-            style={{
-              objectPosition: s.position,
-              transformOrigin: s.origin,
-              "--z0": s.zoomFrom,
-              "--z1": s.zoomTo,
-            } as CSSProperties}
-          />
-        ))}
-
-        {/* keep the words readable, keep the truck visible on the right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B1628]/90 via-[#0B1628]/55 to-[#0B1628]/5 max-md:from-[#0B1628]/80 max-md:via-[#0B1628]/60 max-md:to-[#0B1628]/35" />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0B1628]/85 to-transparent" />
-
-        {/* message */}
-        <div className="relative z-10 container mx-auto flex h-full items-center px-6 pt-[68px] pb-48 md:pb-32">
-          <div key={index} className="hero-copy max-w-2xl" aria-live="off">
-            <h1
-              className="text-[clamp(46px,7.5vw,96px)] leading-[0.95] tracking-wide text-white"
-              style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+        <div className="mx-auto w-full max-w-6xl px-6 pb-14 pt-2 md:pb-20 md:pt-0">
+          <h1
+            className="rise text-[clamp(40px,6.4vw,84px)] md:max-w-[12ch] font-semibold leading-[1.02] tracking-[-0.035em]"
+          >
+            We move your cargo across Southern Africa.
+          </h1>
+          <p className="rise mt-5 max-w-xl text-lg leading-snug text-white/85 md:text-xl" style={{ ["--d" as string]: "120ms" }}>
+            Road, sea and air freight, customs clearance and truck hire, run from Midrand with trucks from 8 to 36 tonnes.
+          </p>
+          <div className="rise mt-8 flex flex-wrap items-center gap-x-7 gap-y-4" style={{ ["--d" as string]: "240ms" }}>
+            <Link
+              href="/contact"
+              className="rounded-full bg-white px-7 py-3.5 text-[15px] font-medium text-[#0B1628] transition hover:bg-white/90"
             >
-              <span className="block">{current.title[0]}</span>
-              <span className="block">{current.title[1]}</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 md:text-xl">{current.text}</p>
-            <div className="mt-9 flex flex-wrap gap-4">
-              <button
-                onClick={() => nav(current.primary.page)}
-                className="rounded-lg bg-[#F4A022] px-8 py-4 text-sm font-bold uppercase tracking-widest text-[#0B1628] transition-all hover:-translate-y-1 hover:bg-[#e8940f] hover:shadow-xl"
-              >
-                {current.primary.label}
-              </button>
-              <button
-                onClick={() => nav(current.secondary.page)}
-                className="rounded-lg border-2 border-white/40 bg-transparent px-8 py-4 text-sm font-semibold uppercase tracking-widest text-white transition-all hover:border-white hover:bg-white/10"
-              >
-                {current.secondary.label}
-              </button>
-            </div>
+              Get a quote
+            </Link>
+            <a
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-white"
+            >
+              Chat on WhatsApp
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
           </div>
-        </div>
-
-        {/* slide controls */}
-        <div className="absolute inset-x-0 bottom-32 z-10 md:bottom-24">
-          <div className="container mx-auto flex items-center justify-between px-6">
-            <div className="flex items-center gap-2">
-              {slides.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => go(i)}
-                  aria-label={`Go to slide ${i + 1}: ${s.title[0]}`}
-                  aria-current={i === index}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === index ? "w-10 bg-[#F4A022]" : "w-5 bg-white/40 hover:bg-white/70"
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="hidden gap-2 md:flex">
-              <button
-                onClick={() => go(index - 1)}
-                aria-label="Previous slide"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 text-white transition-colors hover:bg-white/15"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => go(index + 1)}
-                aria-label="Next slide"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 text-white transition-colors hover:bg-white/15"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* facts strip */}
-        <div className="absolute inset-x-0 bottom-0 z-10 border-t border-white/10 bg-[#0B1628]/70 backdrop-blur-sm">
-          <div className="container mx-auto grid grid-cols-2 gap-y-3 px-6 py-4 md:grid-cols-4">
-            {trust.map(({ num, label }) => (
-              <div key={label} className="flex items-baseline gap-3">
-                <span className="text-3xl leading-none text-white" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>{num}</span>
-                <span className="text-sm text-white/65">{label}</span>
-              </div>
-            ))}
-          </div>
+          <p className="rise mt-10 text-[13px] text-white/60" style={{ ["--d" as string]: "360ms" }}>
+            Midrand, Johannesburg · Mon–Fri 07:00–18:00
+          </p>
         </div>
       </section>
 
-      {/* ── WHY US ── */}
-      <section className="py-24 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16 scroll-animate">
-            <p className="text-[#00A896] text-xs font-bold tracking-[3px] uppercase mb-3">Why Rain Hub</p>
-            <h2 className="text-5xl md:text-7xl font-black text-[#0B1628] leading-none mb-4 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-              WHAT SETS US APART
-            </h2>
-            <p className="text-gray-500 text-base leading-relaxed">
-              We deliver excellence through reliability, innovation, and unwavering commitment to your supply chain success.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {whyCards.map((card, i) => (
-              <div key={card.title} className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-[#00A896] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 scroll-animate" style={{ transitionDelay: `${i * 80}ms` }}>
-                <div className="text-3xl mb-5">{card.icon}</div>
-                <h3 className="text-xl font-black text-[#0B1628] mb-3 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>{card.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── VIDEO SECTION ── */}
-      <section className="py-24 bg-[#0B1628] relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-[#00A896] text-xs font-bold tracking-[3px] uppercase mb-4">See Us In Action</p>
-            <h2 className="text-5xl md:text-7xl font-black text-white leading-none mb-6 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-              LOGISTICS THAT<br />NEVER STOPS
-            </h2>
-            <p className="text-white/60 text-base leading-relaxed mb-12 max-w-xl mx-auto">
-              From first mile to last mile — Rain Hub Logistics orchestrates complex supply chains so your business can focus on what matters most.
-            </p>
-            <div className="rounded-2xl overflow-hidden border-2 border-white/10 relative aspect-video">
-              <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover">
-                <source src="https://videos.pexels.com/video-files/4439432/4439432-hd_1920_1080_30fps.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1628]/40 to-transparent pointer-events-none" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CLIENT LOGOS ── */}
-      <section className="py-20 bg-white border-t border-gray-100">
-        <div className="container mx-auto px-6">
-          <p className="text-[#00A896] text-xs font-bold tracking-[3px] uppercase text-center mb-3">Client Portfolio</p>
-          <h2 className="text-4xl md:text-5xl font-black text-[#0B1628] text-center mb-3 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-            TRUSTED BY INDUSTRY LEADERS
+      {/* ── Services ── */}
+      <section className="bg-white py-24 md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="reveal max-w-2xl text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1628] md:text-6xl">
+            Everything your cargo needs, from one team.
           </h2>
-          <p className="text-gray-400 text-sm text-center mb-12">Selected clients across manufacturing, infrastructure, and heavy industry.</p>
-          <div className="flex flex-wrap gap-3 justify-center max-w-3xl mx-auto mb-12">
-            {clientNames.map((name) => (
-              <div key={name} className="bg-gray-50 border border-gray-200 hover:border-[#00A896] hover:text-[#00A896] rounded-xl px-6 py-4 text-sm font-bold text-[#0B1628] tracking-wide transition-all duration-200 cursor-default">
-                {name}
+
+          <div className="mt-14 md:mt-20">
+            {services.map((s, i) => (
+              <Link
+                key={s.name}
+                href="/services"
+                className="reveal group flex items-center justify-between gap-6 border-t border-black/10 py-7 last:border-b md:py-9"
+                style={{ ["--d" as string]: `${i * 60}ms` }}
+              >
+                <div>
+                  <div className="text-2xl font-semibold tracking-[-0.025em] text-[#0B1628] md:text-4xl">{s.name}</div>
+                  <p className="mt-1.5 max-w-xl text-[15px] leading-snug text-[#6e6e73] md:text-base">{s.line}</p>
+                </div>
+                <ArrowRight className="h-6 w-6 shrink-0 text-[#1c5386] transition-transform duration-300 group-hover:translate-x-1.5" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── How it works ── */}
+      <section className="bg-[#F5F5F7] py-24 md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="reveal max-w-xl text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1628] md:text-6xl">
+            Getting moving is simple.
+          </h2>
+          <div className="mt-14 grid gap-12 md:mt-20 md:grid-cols-3 md:gap-10">
+            {steps.map((s, i) => (
+              <div key={s.n} className="reveal" style={{ ["--d" as string]: `${i * 90}ms` }}>
+                <div className="text-6xl font-light tracking-tight text-[#1c5386] md:text-7xl">{s.n}</div>
+                <h3 className="mt-5 text-xl font-semibold tracking-[-0.02em] text-[#0B1628]">{s.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[#6e6e73]">{s.text}</p>
               </div>
             ))}
           </div>
-          <div className="text-center">
-            <button onClick={() => nav("clients")} className="inline-flex items-center gap-2 bg-[#F4A022] hover:bg-[#e8940f] text-[#0B1628] font-bold px-8 py-4 rounded-lg text-sm uppercase tracking-widest transition-all hover:-translate-y-1 hover:shadow-lg">
-              View All Clients <ArrowRight className="w-4 h-4" />
-            </button>
+        </div>
+      </section>
+
+      {/* ── Fleet ── */}
+      <section className="bg-[#0B1628] py-24 text-white md:py-32">
+        <div className="mx-auto grid max-w-6xl gap-14 px-6 md:grid-cols-2 md:items-center">
+          <div className="reveal">
+            <h2 className="text-4xl font-semibold leading-[1.05] tracking-[-0.03em] md:text-6xl">
+              From an 8&#8209;tonne truck to a 36&#8209;tonne super link.
+            </h2>
+            <Link href="/fleet" className="group mt-8 inline-flex items-center gap-1.5 text-[15px] font-medium text-white">
+              See the fleet
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="reveal rounded-3xl bg-white/[0.06] p-7 md:p-9" style={{ ["--d" as string]: "80ms" }}>
+              <div className="text-6xl font-semibold tracking-[-0.04em] md:text-7xl">8<span className="text-3xl font-medium text-white/60 md:text-4xl"> t</span></div>
+              <p className="mt-3 text-sm leading-snug text-white/65">Standard trucks for regional deliveries.</p>
+            </div>
+            <div className="reveal rounded-3xl bg-white/[0.06] p-7 md:p-9" style={{ ["--d" as string]: "160ms" }}>
+              <div className="text-6xl font-semibold tracking-[-0.04em] md:text-7xl">36<span className="text-3xl font-medium text-white/60 md:text-4xl"> t</span></div>
+              <p className="mt-3 text-sm leading-snug text-white/65">Super link trucks for heavy and cross-border loads.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Clients ── */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="mx-auto max-w-6xl px-6 text-center">
+          <p className="reveal text-sm text-[#6e6e73]">Trusted by businesses across manufacturing, machinery and heavy industry</p>
+          <div className="reveal mt-8 flex flex-wrap justify-center gap-x-12 gap-y-4 text-xl font-semibold tracking-tight text-black/35 md:text-2xl">
+            {clients.map((c) => (
+              <span key={c}>{c}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Close ── */}
+      <section className="bg-[#1c5386] py-24 text-white md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="reveal max-w-2xl text-4xl font-semibold leading-[1.05] tracking-[-0.03em] md:text-6xl">
+            Tell us what needs to move.
+          </h2>
+          <div className="reveal mt-9 flex flex-wrap items-center gap-x-7 gap-y-4" style={{ ["--d" as string]: "100ms" }}>
+            <Link href="/contact" className="rounded-full bg-white px-7 py-3.5 text-[15px] font-medium text-[#0B1628] transition hover:bg-white/90">
+              Get a quote
+            </Link>
+            <a href={company.phoneHref} className="text-[15px] font-medium text-white/90 hover:text-white">
+              Call {company.phoneDisplay}
+            </a>
+            <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="text-[15px] font-medium text-white/90 hover:text-white">
+              WhatsApp
+            </a>
           </div>
         </div>
       </section>
