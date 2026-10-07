@@ -41,7 +41,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             {/* Image */}
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=900&auto=format&fit=crop"
+                src="/images/about-team.jpeg"
                 alt="Rain Hub Logistics"
                 className="w-full h-[500px] object-cover rounded-2xl"
               />

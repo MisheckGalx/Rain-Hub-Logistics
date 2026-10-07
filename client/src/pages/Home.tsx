@@ -108,7 +108,7 @@ export default function Home({ onNavigate }: HomeProps) {
 
       {/* ── VIDEO SECTION ── */}
       <section className="py-24 bg-[#0B1628] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600')] bg-cover bg-center opacity-[0.06]" />
+        <div className="absolute inset-0 bg-[url('/images/home-hero.jpeg')] bg-cover bg-center opacity-30" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <p className="text-[#00A896] text-xs font-bold tracking-[3px] uppercase mb-4">See Us In Action</p>
