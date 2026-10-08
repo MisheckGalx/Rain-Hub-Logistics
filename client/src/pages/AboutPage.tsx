@@ -1,6 +1,7 @@
 import { useReveal } from "@/hooks/useReveal";
 import { company } from "@/lib/company";
 import ClosingCta from "@/components/ClosingCta";
+import Photo from "@/components/Photo";
 
 /**
  * People section: add the real team here and it appears automatically.
@@ -28,6 +29,17 @@ export default function AboutPage() {
             {company.name} moves cargo by road, sea and air, clears it through customs, and hires out trucks with drivers. We're
             based at {company.addressLines[1].replace("Halfway House, ", "")}, and we run the whole job so you only have one number to call.
           </p>
+        </div>
+      </section>
+
+      <section className="bg-white pb-20 md:pb-28">
+        <div className="mx-auto grid max-w-6xl gap-4 px-6 md:grid-cols-[1.4fr_1fr]">
+          <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[500px]">
+            <Photo name="road-low" alt="A truck far down a wide road, seen from a low angle under a deep blue sky" className="object-[35%_50%]" />
+          </div>
+          <div className="reveal h-[380px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[500px]" style={{ ["--d" as string]: "90ms" }}>
+            <Photo name="truck-yard" alt="The truck parked on a quiet street, cab facing the camera" className="object-[50%_35%]" />
+          </div>
         </div>
       </section>
 

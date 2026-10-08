@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { useReveal } from "@/hooks/useReveal";
 import ClosingCta from "@/components/ClosingCta";
+import Photo from "@/components/Photo";
 
 const trucks = [
   {
@@ -40,19 +41,27 @@ export default function FleetPage() {
         </div>
       </section>
 
-      {/* Real photo band. Swap in more of your own trucks here as you take them. */}
+      {/* Gallery: real photos of our trucks. Add more as you take them. */}
       <section className="bg-white pb-20 md:pb-28">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="reveal overflow-hidden rounded-3xl bg-[#F5F5F7]">
-            <picture>
-              <source srcSet="/images/home-hero.webp" type="image/webp" />
-              <img
-                src="/images/home-hero.jpeg"
-                alt="A Rain Hub truck parked beside a quiet open road"
-                loading="lazy"
-                className="h-[320px] w-full object-cover object-[72%_50%] md:h-[520px]"
-              />
-            </picture>
+        <div className="mx-auto max-w-6xl space-y-4 px-6">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:col-span-2 md:h-[560px]">
+              <Photo name="truck-road" alt="A Rain Hub box truck parked on the roadside, with the open road stretching ahead" className="object-[70%_50%]" priority />
+            </div>
+            <div className="reveal h-[420px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[560px]" style={{ ["--d" as string]: "90ms" }}>
+              <Photo name="truck-front" alt="Front view of the white box truck, cab and grille" className="object-[50%_35%]" />
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="reveal h-[340px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[380px]">
+              <Photo name="bay-night-a" alt="The truck at night inside a covered loading bay" className="object-[50%_55%]" />
+            </div>
+            <div className="reveal h-[340px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[380px]" style={{ ["--d" as string]: "90ms" }}>
+              <Photo name="bay-night-b" alt="Looking down a covered bay lit up at night, with the truck at the far end" className="object-[50%_60%]" />
+            </div>
+            <div className="reveal h-[340px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[380px]" style={{ ["--d" as string]: "180ms" }}>
+              <Photo name="road-rear-a" alt="The truck parked on the shoulder of a long straight road under a clear blue sky" className="object-[40%_50%]" />
+            </div>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import { company, whatsappUrl } from "@/lib/company";
+import Photo from "@/components/Photo";
 
 const services = [
   { name: "Road freight", line: "Regional and cross-border trucking across the SADC region." },
@@ -121,25 +122,28 @@ export default function Home() {
 
       {/* ── Fleet ── */}
       <section className="bg-[#0B1628] py-24 text-white md:py-32">
-        <div className="mx-auto grid max-w-6xl gap-14 px-6 md:grid-cols-2 md:items-center">
-          <div className="reveal">
-            <h2 className="text-4xl font-semibold leading-[1.05] tracking-[-0.03em] md:text-6xl">
+        <div className="mx-auto grid max-w-6xl gap-14 px-6 md:grid-cols-2 md:items-center md:gap-20">
+          <div>
+            <h2 className="reveal text-4xl font-semibold leading-[1.05] tracking-[-0.03em] md:text-6xl">
               From an 8&#8209;tonne truck to a 36&#8209;tonne super link.
             </h2>
-            <Link href="/fleet" className="group mt-8 inline-flex items-center gap-1.5 text-[15px] font-medium text-white">
+            <div className="mt-10 grid grid-cols-2 gap-4">
+              <div className="reveal rounded-3xl bg-white/[0.06] p-6 md:p-8" style={{ ["--d" as string]: "80ms" }}>
+                <div className="text-5xl font-semibold tracking-[-0.04em] md:text-6xl">8<span className="text-2xl font-medium text-white/60 md:text-3xl"> t</span></div>
+                <p className="mt-2 text-sm leading-snug text-white/65">Standard trucks for regional deliveries.</p>
+              </div>
+              <div className="reveal rounded-3xl bg-white/[0.06] p-6 md:p-8" style={{ ["--d" as string]: "160ms" }}>
+                <div className="text-5xl font-semibold tracking-[-0.04em] md:text-6xl">36<span className="text-2xl font-medium text-white/60 md:text-3xl"> t</span></div>
+                <p className="mt-2 text-sm leading-snug text-white/65">Super link trucks for heavy and cross-border loads.</p>
+              </div>
+            </div>
+            <Link href="/fleet" className="reveal group mt-8 inline-flex items-center gap-1.5 text-[15px] font-medium text-white">
               See the fleet
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="reveal rounded-3xl bg-white/[0.06] p-7 md:p-9" style={{ ["--d" as string]: "80ms" }}>
-              <div className="text-6xl font-semibold tracking-[-0.04em] md:text-7xl">8<span className="text-3xl font-medium text-white/60 md:text-4xl"> t</span></div>
-              <p className="mt-3 text-sm leading-snug text-white/65">Standard trucks for regional deliveries.</p>
-            </div>
-            <div className="reveal rounded-3xl bg-white/[0.06] p-7 md:p-9" style={{ ["--d" as string]: "160ms" }}>
-              <div className="text-6xl font-semibold tracking-[-0.04em] md:text-7xl">36<span className="text-3xl font-medium text-white/60 md:text-4xl"> t</span></div>
-              <p className="mt-3 text-sm leading-snug text-white/65">Super link trucks for heavy and cross-border loads.</p>
-            </div>
+          <div className="reveal aspect-[4/5] overflow-hidden rounded-3xl" style={{ ["--d" as string]: "120ms" }}>
+            <Photo name="road-rear-b" alt="The rear of a white box truck parked on a quiet road under a clear blue sky" className="object-[50%_55%]" />
           </div>
         </div>
       </section>
