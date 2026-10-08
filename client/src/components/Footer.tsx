@@ -1,92 +1,54 @@
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Link } from "wouter";
+import { company, whatsappUrl } from "@/lib/company";
 
-type Page = "home" | "services" | "about" | "fleet" | "clients" | "contact";
+const services = ["Road freight", "Sea freight", "Air freight", "Customs clearance", "Truck hire"];
 
-interface FooterProps {
-  onNavigate: (page: Page) => void;
-}
-
-export default function Footer({ onNavigate }: FooterProps) {
-  const handleNav = (page: Page) => {
-    onNavigate(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+export default function Footer() {
   return (
-    <footer className="bg-[#0B1628] text-white/60">
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
+    <footer className="bg-[#F5F5F7] text-[#6e6e73]">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 bg-gradient-to-br from-[#0055A5] to-[#00A896] rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-black text-sm tracking-wider" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>RH</span>
-              </div>
-              <div>
-                <div className="text-white font-black text-sm tracking-[2px]" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>RAIN HUB</div>
-                <div className="text-white/35 text-[10px] tracking-[2px] uppercase">Logistics PTY LTD</div>
-              </div>
-            </div>
-            <p className="text-sm text-white/45 leading-relaxed max-w-[240px]">
-              Your trusted partner for comprehensive logistics solutions across the SADC region and beyond.
+            <img src="/images/logo.png" alt="Rain Hub Logistics" className="h-9 w-auto" />
+            <p className="mt-4 max-w-[260px] text-[13px] leading-relaxed">
+              Freight, customs clearance and truck hire from Midrand, across Southern Africa.
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[2px] text-white mb-5">Quick Links</h4>
-            <ul className="space-y-2.5">
-              {(["home", "about", "fleet", "clients"] as Page[]).map((p) => (
-                <li key={p}>
-                  <button onClick={() => handleNav(p)} className="text-sm text-white/45 hover:text-[#00A896] transition-colors capitalize">
-                    {p === "home" ? "Home" : p.charAt(0).toUpperCase() + p.slice(1)}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-[2px] text-white mb-5">Services</h4>
-            <ul className="space-y-2.5">
-              {["Road Freight", "Sea Freight", "Air Freight", "Customs Clearance", "Truck Hire"].map((s) => (
+            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Services</h4>
+            <ul className="space-y-2 text-[13px]">
+              {services.map((s) => (
                 <li key={s}>
-                  <button onClick={() => handleNav("services")} className="text-sm text-white/45 hover:text-[#00A896] transition-colors text-left">
-                    {s}
-                  </button>
+                  <Link href="/services" className="hover:text-[#0B1628]">{s}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[2px] text-white mb-5">Contact</h4>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#00A896] mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-white/45 leading-relaxed">
-                  1070 Old Pretoria Road<br />Midrand, Johannesburg 1685
-                </span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-[#00A896] flex-shrink-0" />
-                <a href="tel:+27010850769" className="text-sm text-white/45 hover:text-[#00A896] transition-colors">010 085 0769</a>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-[#00A896] flex-shrink-0" />
-                <a href="mailto:info@rainhubsolutions.co.za" className="text-sm text-white/45 hover:text-[#00A896] transition-colors break-all">
-                  info@rainhubsolutions.co.za
-                </a>
-              </li>
+            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Company</h4>
+            <ul className="space-y-2 text-[13px]">
+              <li><Link href="/about" className="hover:text-[#0B1628]">About</Link></li>
+              <li><Link href="/fleet" className="hover:text-[#0B1628]">Fleet</Link></li>
+              <li><Link href="/clients" className="hover:text-[#0B1628]">Clients</Link></li>
+              <li><Link href="/contact" className="hover:text-[#0B1628]">Get a quote</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Talk to us</h4>
+            <ul className="space-y-2 text-[13px]">
+              <li><a href={company.phoneHref} className="hover:text-[#0B1628]">{company.phoneDisplay}</a></li>
+              <li><a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="hover:text-[#0B1628]">WhatsApp</a></li>
+              <li><a href={`mailto:${company.email}`} className="break-all hover:text-[#0B1628]">{company.email}</a></li>
+              <li className="pt-1 leading-relaxed">{company.addressLines.join(", ")}</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-white/30">© {new Date().getFullYear()} Rain Hub Logistics PTY LTD. All rights reserved.</p>
-          <p className="text-xs text-white/25">Midrand, Johannesburg, South Africa</p>
+        <div className="mt-12 border-t border-black/10 pt-5 text-xs">
+          © {new Date().getFullYear()} {company.legalName}. All rights reserved.
         </div>
       </div>
     </footer>

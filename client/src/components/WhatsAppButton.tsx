@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-const WHATSAPP_NUMBER = "27108500769";
-const WHATSAPP_MESSAGE = "Hi Rain Hub Logistics! I'd like to get a quote for your freight services.";
+import { whatsappUrl } from "@/lib/company";
 
 export default function WhatsAppButton() {
   const [visible, setVisible] = useState(false);
@@ -25,7 +24,7 @@ export default function WhatsAppButton() {
   }, [visible, hasAnimated]);
 
   const handleClick = () => {
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+    const url = whatsappUrl();
     window.open(url, "_blank", "noopener,noreferrer");
   };
 

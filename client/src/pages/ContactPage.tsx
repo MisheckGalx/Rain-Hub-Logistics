@@ -1,219 +1,180 @@
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
-import { trpc } from "@/lib/trpc";
-import { toast } from "sonner";
+import { Link } from "wouter";
+import { company, whatsappUrl } from "@/lib/company";
+
+const serviceOptions = ["Road freight", "Sea freight", "Air freight", "Customs clearance", "Truck hire", "Not sure yet"];
+
+const field =
+  "w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] text-[#0B1628] placeholder:text-black/35 outline-none transition focus:border-[#1c5386] focus:ring-4 focus:ring-[#1c5386]/10";
+const label = "mb-1.5 block text-[13px] font-medium text-[#0B1628]";
+
+type Status = "idle" | "sending" | "done" | "error";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    serviceType: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState("");
+  const [sentTo, setSentTo] = useState({ name: "", phone: "" });
 
-  const submitQuote = trpc.contact.submitQuote.useMutation({
-    onSuccess: () => {
-      toast.success("Quote request submitted! We'll be in touch within 24 hours.");
-      setFormData({ name: "", email: "", phone: "", company: "", serviceType: "", message: "" });
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to submit. Please try again.");
-    },
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone || !formData.serviceType || !formData.message) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-    setIsSubmitting(true);
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    setStatus("sending");
+    setError("");
     try {
-      await submitQuote.mutateAsync({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        serviceType: formData.serviceType as "Road Freight" | "Sea Freight" | "Air Freight" | "Customs Clearance" | "Truck Hire",
-        message: formData.message,
+      const res = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-    } finally {
-      setIsSubmitting(false);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || "Something went wrong.");
+      setSentTo({ name: data.name.split(" ")[0], phone: data.phone });
+      setStatus("done");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setStatus("error");
     }
-  };
+  }
 
   return (
-    <main className="pt-20 relative min-h-screen">
-      {/* Google Maps Background */}
-      <div className="fixed inset-0 z-0">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.8!2d28.1199!3d-25.9905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9561fa0f9e7f3d%3A0x1234!2s1070+Old+Pretoria+Rd%2C+Midrand%2C+1685!5e0!3m2!1sen!2sza"
-          className="w-full h-full border-0"
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          style={{ opacity: 0.35, pointerEvents: "none" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0B1628]/85 to-[#0B1628]/60" />
-      </div>
+    <main className="bg-[#F5F5F7] pb-24 pt-32 md:pt-40">
+      <div className="mx-auto max-w-6xl px-6">
+        <h1 className="max-w-3xl text-5xl font-semibold leading-[1.03] tracking-[-0.035em] text-[#0B1628] md:text-7xl">
+          Tell us what needs to move.
+        </h1>
+        <p className="mt-5 max-w-xl text-lg leading-snug text-[#6e6e73]">
+          Fill in what you can and we'll come back with a price. Prefer to talk? Call or WhatsApp us, it's just as quick.
+        </p>
 
-      {/* Page Hero */}
-      <div className="relative z-10 py-16 px-6">
-        <div className="container mx-auto">
-          <p className="text-[#00A896] text-xs font-bold tracking-[3px] uppercase mb-3">Get In Touch</p>
-          <h1 className="text-6xl md:text-8xl font-black text-white leading-none tracking-wide mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-            CONTACT US
-          </h1>
-          <p className="text-white/70 text-lg max-w-xl leading-relaxed">
-            Ready to move your cargo? Get a customised logistics solution tailored to your business today.
-          </p>
-        </div>
-      </div>
-
-      {/* Contact Grid */}
-      <div className="relative z-10 pb-20 px-6">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-            {/* Info Panel */}
-            <div className="bg-[#0B1628]/85 backdrop-blur-xl border border-white/12 rounded-2xl p-10">
-              <h3 className="text-2xl font-black text-white mb-8 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                CONTACT INFO
-              </h3>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-11 h-11 min-w-[44px] bg-gradient-to-br from-[#0055A5] to-[#00A896] rounded-xl flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/40 uppercase tracking-widest mb-1">Phone</div>
-                    <a href="tel:+27010850769" className="text-[#00A896] font-semibold text-sm hover:text-white transition-colors">
-                      010 085 0769
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-11 h-11 min-w-[44px] bg-gradient-to-br from-[#0055A5] to-[#00A896] rounded-xl flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/40 uppercase tracking-widest mb-1">Email</div>
-                    <a href="mailto:info@rainhubsolutions.co.za" className="text-[#00A896] font-semibold text-sm hover:text-white transition-colors break-all">
-                      info@rainhubsolutions.co.za
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-11 h-11 min-w-[44px] bg-gradient-to-br from-[#0055A5] to-[#00A896] rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/40 uppercase tracking-widest mb-1">Address</div>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      Halfway House<br />
-                      1070 Old Pretoria Road<br />
-                      Midrand, Johannesburg<br />
-                      Gauteng 1685, South Africa
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 pt-2 border-t border-white/8">
-                  <div className="w-11 h-11 min-w-[44px] bg-gradient-to-br from-[#0055A5] to-[#00A896] rounded-xl flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-white/40 uppercase tracking-widest mb-1">Business Hours</div>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      Mon – Fri: 07:00 – 18:00<br />
-                      Saturday: 08:00 – 13:00
-                    </p>
-                  </div>
-                </div>
+        <div className="mt-14 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-14">
+          {/* Form */}
+          <div className="rounded-3xl bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] md:p-10">
+            {status === "done" ? (
+              <div className="py-10 text-center">
+                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0B1628]">Thanks, {sentTo.name}.</h2>
+                <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-[#6e6e73]">
+                  We've got your request and will come back to you on {sentTo.phone}, within 24 hours.
+                </p>
+                <Link href="/" className="mt-8 inline-block text-[15px] font-medium text-[#1c5386] hover:underline">
+                  Back to home
+                </Link>
               </div>
-            </div>
-
-            {/* Quote Form */}
-            <div className="lg:col-span-2 bg-white/97 backdrop-blur-xl rounded-2xl p-10 shadow-2xl">
-              <h3 className="text-3xl font-black text-[#0B1628] mb-8 tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                GET A FREE QUOTE
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            ) : (
+              <form onSubmit={onSubmit} className="space-y-5" noValidate>
+                <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Full Name *</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange}
-                      placeholder="Your full name"
-                      className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium" required />
+                    <label htmlFor="name" className={label}>Your name</label>
+                    <input id="name" name="name" required autoComplete="name" className={field} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Company</label>
-                    <input type="text" name="company" value={formData.company} onChange={handleChange}
-                      placeholder="Company name (optional)"
-                      className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium" />
+                    <label htmlFor="phone" className={label}>Phone or WhatsApp</label>
+                    <input id="phone" name="phone" type="tel" required autoComplete="tel" className={field} />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Email *</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange}
-                      placeholder="your@email.com"
-                      className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium" required />
+                    <label htmlFor="email" className={label}>Email <span className="font-normal text-black/40">(optional)</span></label>
+                    <input id="email" name="email" type="email" autoComplete="email" className={field} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Phone *</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange}
-                      placeholder="+27 (0) 10 085 0769"
-                      className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium" required />
+                    <label htmlFor="service" className={label}>What do you need?</label>
+                    <select id="service" name="service" required defaultValue="" className={field}>
+                      <option value="" disabled>Choose a service</option>
+                      {serviceOptions.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Service Type *</label>
-                  <select name="serviceType" value={formData.serviceType} onChange={handleChange}
-                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium bg-white" required>
-                    <option value="">Select a service...</option>
-                    <option value="Road Freight">Road Freight</option>
-                    <option value="Sea Freight">Sea Freight</option>
-                    <option value="Air Freight">Air Freight</option>
-                    <option value="Customs Clearance">Customs Clearance</option>
-                    <option value="Truck Hire">Truck Hire</option>
-                  </select>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label htmlFor="from" className={label}>Collecting from</label>
+                    <input id="from" name="from" placeholder="e.g. Midrand" className={field} />
+                  </div>
+                  <div>
+                    <label htmlFor="to" className={label}>Delivering to</label>
+                    <input id="to" name="to" placeholder="e.g. Lusaka" className={field} />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-[#0B1628] mb-2">Message *</label>
-                  <textarea name="message" value={formData.message} onChange={handleChange}
-                    placeholder="Tell us about your logistics needs — origin, destination, cargo type, urgency..."
-                    rows={5}
-                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-[#00A896] focus:outline-none transition-colors text-sm font-medium resize-none" required />
+                  <label htmlFor="details" className={label}>What are you moving? <span className="font-normal text-black/40">(optional)</span></label>
+                  <textarea
+                    id="details"
+                    name="details"
+                    rows={4}
+                    placeholder="Type of cargo, rough weight or size, and when you need it moved."
+                    className={`${field} resize-none`}
+                  />
                 </div>
+
+                {/* Honeypot: hidden from people, irresistible to bots */}
+                <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                  <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+                </div>
+
+                {status === "error" && (
+                  <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+                )}
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || submitQuote.isPending}
-                  className="w-full bg-gradient-to-r from-[#0055A5] to-[#00A896] hover:opacity-90 text-white font-bold py-4 rounded-xl text-sm uppercase tracking-widest transition-all hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                  disabled={status === "sending"}
+                  className="w-full rounded-full bg-[#1c5386] px-7 py-3.5 text-[15px] font-medium text-white transition hover:bg-[#164470] disabled:opacity-60 md:w-auto"
                 >
-                  {isSubmitting || submitQuote.isPending ? (
-                    <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Submitting...</>
-                  ) : (
-                    <><Send className="w-4 h-4" /> Submit Quote Request</>
-                  )}
+                  {status === "sending" ? "Sending…" : "Request a quote"}
                 </button>
-                <p className="text-xs text-gray-400 text-center">We respond to all quote requests within 24 hours.</p>
               </form>
-            </div>
+            )}
           </div>
+
+          {/* Direct contact */}
+          <aside className="space-y-9 text-[15px]">
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">Call</h2>
+              <a href={company.phoneHref} className="mt-1.5 block text-2xl font-semibold tracking-tight text-[#0B1628] hover:text-[#1c5386]">
+                {company.phoneDisplay}
+              </a>
+            </div>
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">WhatsApp</h2>
+              <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="mt-1.5 block text-2xl font-semibold tracking-tight text-[#0B1628] hover:text-[#1c5386]">
+                Message us
+              </a>
+            </div>
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">Email</h2>
+              <a href={`mailto:${company.email}`} className="mt-1.5 block break-all text-[#0B1628] hover:text-[#1c5386]">{company.email}</a>
+            </div>
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">Hours</h2>
+              <dl className="mt-1.5 space-y-0.5 text-[#0B1628]">
+                {company.hours.map(([d, h]) => (
+                  <div key={d} className="flex justify-between gap-4"><dt>{d}</dt><dd className="text-[#6e6e73]">{h}</dd></div>
+                ))}
+              </dl>
+            </div>
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">Find us</h2>
+              <address className="mt-1.5 not-italic leading-relaxed text-[#0B1628]">
+                {company.addressLines.map((l) => <div key={l}>{l}</div>)}
+              </address>
+            </div>
+          </aside>
+        </div>
+
+        {/* Map */}
+        <div className="mt-14 overflow-hidden rounded-3xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <iframe
+            title="Rain Hub Logistics on the map"
+            src="https://www.google.com/maps?q=1070+Old+Pretoria+Road,+Midrand,+1685&output=embed"
+            className="h-[360px] w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </div>
     </main>
