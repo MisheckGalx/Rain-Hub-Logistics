@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -300,3 +299,5 @@ body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; 
   html { scroll-behavior: auto; }
   .reveal, .rise { opacity: 1; transform: none; transition: none; animation: none; }
 }
+
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 4px; }

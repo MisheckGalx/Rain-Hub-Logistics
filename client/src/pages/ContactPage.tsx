@@ -10,6 +10,12 @@ const label = "mb-1.5 block text-[13px] font-medium text-[#0B1628]";
 
 type Status = "idle" | "sending" | "done" | "error";
 
+// /contact?service=Truck%20hire preselects the service the visitor came from
+function initialService() {
+  const q = new URLSearchParams(window.location.search).get("service") ?? "";
+  return serviceOptions.includes(q) ? q : "";
+}
+
 export default function ContactPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
@@ -80,7 +86,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="service" className={label}>What do you need?</label>
-                    <select id="service" name="service" required defaultValue="" className={field}>
+                    <select id="service" name="service" required defaultValue={initialService()} className={field}>
                       <option value="" disabled>Choose a service</option>
                       {serviceOptions.map((s) => (
                         <option key={s} value={s}>{s}</option>

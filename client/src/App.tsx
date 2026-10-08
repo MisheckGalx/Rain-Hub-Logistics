@@ -15,15 +15,6 @@ import ClientsPage from "./pages/ClientsPage";
 import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
-const paths: Record<string, string> = {
-  home: "/",
-  services: "/services",
-  about: "/about",
-  fleet: "/fleet",
-  clients: "/clients",
-  contact: "/contact",
-};
-
 const titles: Record<string, string> = {
   "/": "Rain Hub Logistics — Freight, customs and truck hire from Midrand",
   "/services": "Services — Rain Hub Logistics",
@@ -33,15 +24,22 @@ const titles: Record<string, string> = {
   "/contact": "Get a quote — Rain Hub Logistics",
 };
 
-function App() {
-  const [location, setLocation] = useLocation();
+const descriptions: Record<string, string> = {
+  "/": "Rain Hub Logistics moves cargo across Southern Africa: road, sea and air freight, customs clearance and truck hire from Midrand, Johannesburg.",
+  "/services": "Road freight, sea freight, air freight, customs clearance and truck hire from one Midrand-based team.",
+  "/fleet": "Trucks from 8 to 36 tonnes with professional drivers, dispatched from Midrand for regional and cross-border loads.",
+  "/about": "Rain Hub Logistics is a Midrand logistics company moving cargo by road, sea and air across Southern Africa.",
+  "/clients": "Businesses across cable, machinery and heavy industry that rely on Rain Hub Logistics to move their freight.",
+  "/contact": "Request a freight quote from Rain Hub Logistics. Call, WhatsApp or send the details and we'll come back with a price.",
+};
 
-  // Pages not yet rebuilt still call onNavigate("services") etc. — map that onto real URLs.
-  const onNavigate = (page: string) => setLocation(paths[page] ?? "/");
+function App() {
+  const [location] = useLocation();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     document.title = titles[location] ?? "Page not found — Rain Hub Logistics";
+    document.querySelector('meta[name="description"]')?.setAttribute("content", descriptions[location] ?? descriptions["/"]);
   }, [location]);
 
   return (
@@ -52,10 +50,10 @@ function App() {
           <Navigation />
           <Switch>
             <Route path="/" component={Home} />
-            <Route path="/services">{() => <ServicesPage onNavigate={onNavigate} />}</Route>
-            <Route path="/about">{() => <AboutPage onNavigate={onNavigate} />}</Route>
-            <Route path="/fleet">{() => <FleetPage onNavigate={onNavigate} />}</Route>
-            <Route path="/clients">{() => <ClientsPage onNavigate={onNavigate} />}</Route>
+            <Route path="/services" component={ServicesPage} />
+            <Route path="/about" component={AboutPage} />
+            <Route path="/fleet" component={FleetPage} />
+            <Route path="/clients" component={ClientsPage} />
             <Route path="/contact" component={ContactPage} />
             <Route component={NotFound} />
           </Switch>

@@ -1,140 +1,18 @@
-import { useState, useEffect } from "react";
-
 import { whatsappUrl } from "@/lib/company";
 
+/** Quiet floating shortcut: no pulse, no pop-up, just there when you want it. */
 export default function WhatsAppButton() {
-  const [visible, setVisible] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (visible && !hasAnimated) {
-      const t1 = setTimeout(() => {
-        setShowTooltip(true);
-        setHasAnimated(true);
-        setTimeout(() => setShowTooltip(false), 4000);
-      }, 800);
-      return () => clearTimeout(t1);
-    }
-  }, [visible, hasAnimated]);
-
-  const handleClick = () => {
-    const url = whatsappUrl();
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  if (!visible) return null;
-
   return (
-    <>
-      <style>{`
-        @keyframes wa-slide-in {
-          from { transform: translateX(100px); opacity: 0; }
-          to   { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes wa-pulse-ring {
-          0%   { transform: scale(1); opacity: 0.6; }
-          70%  { transform: scale(1.6); opacity: 0; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
-        @keyframes wa-tooltip-in {
-          from { transform: translateX(10px); opacity: 0; }
-          to   { transform: translateX(0); opacity: 1; }
-        }
-        .wa-wrap {
-          position: fixed;
-          bottom: 28px;
-          right: 28px;
-          z-index: 9999;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          animation: wa-slide-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
-        }
-        .wa-tooltip {
-          position: relative;
-          background: #0B1628;
-          color: #fff;
-          font-size: 13px;
-          font-weight: 500;
-          padding: 10px 14px;
-          border-radius: 12px;
-          pointer-events: none;
-          animation: wa-tooltip-in 0.3s ease forwards;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-          line-height: 1.4;
-          max-width: 200px;
-        }
-        .wa-tooltip::after {
-          content: '';
-          position: absolute;
-          right: -7px;
-          top: 50%;
-          transform: translateY(-50%);
-          border: 7px solid transparent;
-          border-left-color: #0B1628;
-          border-right: none;
-        }
-        .wa-btn {
-          position: relative;
-          width: 62px;
-          height: 62px;
-          background: #25D366;
-          border-radius: 50%;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          box-shadow: 0 4px 20px rgba(37,211,102,0.5);
-          transition: transform 0.2s, box-shadow 0.2s;
-          flex-shrink: 0;
-        }
-        .wa-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 28px rgba(37,211,102,0.6);
-        }
-        .wa-btn:active { transform: scale(0.96); }
-        .wa-pulse {
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          background: #25D366;
-          animation: wa-pulse-ring 2.2s ease-out infinite;
-        }
-        .wa-svg {
-          position: relative;
-          z-index: 1;
-          width: 34px;
-          height: 34px;
-          fill: #fff;
-        }
-      `}</style>
-
-      <div className="wa-wrap">
-        {showTooltip && (
-          <div className="wa-tooltip">
-            Chat with us on WhatsApp 👋
-          </div>
-        )}
-        <button
-          className="wa-btn"
-          onClick={handleClick}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          aria-label="Chat with Rain Hub Logistics on WhatsApp"
-        >
-          <div className="wa-pulse" aria-hidden="true" />
-          <svg className="wa-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-          </svg>
-        </button>
-      </div>
-    </>
+    <a
+      href={whatsappUrl()}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with Rain Hub on WhatsApp"
+      className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition hover:scale-105"
+    >
+      <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden="true">
+        <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.48-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.05 21.8a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88zM20.5 3.49A11.8 11.8 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.44-8.42z" />
+      </svg>
+    </a>
   );
 }
