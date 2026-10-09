@@ -33,12 +33,28 @@ export default function AboutPage() {
       </section>
 
       <section className="bg-white pb-20 md:pb-28">
-        <div className="mx-auto grid max-w-6xl gap-4 px-6 md:grid-cols-[1.4fr_1fr]">
-          <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[500px]">
-            <Photo name="road-low" alt="A truck far down a wide road, seen from a low angle under a deep blue sky" className="object-[35%_50%]" />
+        <div className="mx-auto max-w-6xl space-y-4 px-6">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:col-span-2 md:h-[440px]">
+              <Photo name="road-low" alt="A truck far down a wide road, seen from a low angle under a deep blue sky" className="object-[35%_50%]" />
+            </div>
+            <div
+              className="reveal flex h-[260px] items-center justify-center rounded-3xl bg-[#1c5386] p-10 md:h-[440px]"
+              style={{ ["--d" as string]: "90ms" }}
+            >
+              <img src="/images/logo-white.png" alt="Rain Hub Logistics" className="w-full max-w-[280px]" />
+            </div>
           </div>
-          <div className="reveal h-[380px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[500px]" style={{ ["--d" as string]: "90ms" }}>
-            <Photo name="truck-yard" alt="The truck parked on a quiet street, cab facing the camera" className="object-[50%_35%]" />
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]">
+              <Photo name="truck-yard" alt="The truck parked on a quiet street, cab facing the camera" className="object-[50%_35%]" />
+            </div>
+            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]" style={{ ["--d" as string]: "90ms" }}>
+              <Photo name="bay-night-b" alt="A covered bay lit up at night, with the truck at the far end" className="object-[50%_62%]" />
+            </div>
+            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]" style={{ ["--d" as string]: "180ms" }}>
+              <Photo name="road-rear-a" alt="The truck parked on the shoulder of a long straight road" className="object-[40%_50%]" />
+            </div>
           </div>
         </div>
       </section>

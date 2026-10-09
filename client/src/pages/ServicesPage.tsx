@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight, Check } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import ClosingCta from "@/components/ClosingCta";
+import ServiceVisual from "@/components/ServiceVisual";
 
 const services = [
   {
@@ -128,12 +129,22 @@ export default function ServicesPage() {
           id={s.id}
           className={`scroll-mt-24 py-20 md:py-28 ${i % 2 === 0 ? "bg-white" : "bg-[#F5F5F7]"}`}
         >
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[1.15fr_1fr] md:gap-20">
-            <div className="reveal">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 md:grid-cols-2 md:gap-20">
+            <div className={`reveal ${i % 2 === 1 ? "md:order-2" : ""}`}>
               <p className="text-sm font-medium text-[#1c5386]">{String(i + 1).padStart(2, "0")}</p>
               <h2 className="mt-2 text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1628] md:text-6xl">{s.name}</h2>
               <p className="mt-4 text-sm font-medium text-[#1c5386]">{s.facts}</p>
               <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-[#424245]">{s.text}</p>
+
+              <ul className="mt-8">
+                {s.included.map((item) => (
+                  <li key={item} className="flex gap-3.5 border-t border-black/10 py-3.5 text-[15px] leading-snug text-[#0B1628] last:border-b">
+                    <Check className="mt-0.5 h-[18px] w-[18px] shrink-0 text-[#1c5386]" strokeWidth={2.25} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
               <Link
                 href={`/contact?service=${encodeURIComponent(s.quoteAs)}`}
                 className="group mt-8 inline-flex items-center gap-1.5 text-[15px] font-medium text-[#1c5386]"
@@ -143,14 +154,9 @@ export default function ServicesPage() {
               </Link>
             </div>
 
-            <ul className="reveal self-center" style={{ ["--d" as string]: "100ms" }}>
-              {s.included.map((item) => (
-                <li key={item} className="flex gap-3.5 border-t border-black/10 py-4 text-[15px] leading-snug text-[#0B1628] last:border-b">
-                  <Check className="mt-0.5 h-[18px] w-[18px] shrink-0 text-[#1c5386]" strokeWidth={2.25} />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div className={`reveal ${i % 2 === 1 ? "md:order-1" : ""}`} style={{ ["--d" as string]: "100ms" }}>
+              <ServiceVisual id={s.id} />
+            </div>
           </div>
         </section>
       ))}

@@ -1,21 +1,21 @@
 import { Link } from "wouter";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileCheck2, FileText, KeyRound, MessageCircle, Plane, Ship, Truck } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import { company, whatsappUrl } from "@/lib/company";
 import Photo from "@/components/Photo";
 
 const services = [
-  { name: "Road freight", line: "Regional and cross-border trucking across the SADC region." },
-  { name: "Sea freight", line: "Imports and exports through Durban, Cape Town and East London." },
-  { name: "Air freight", line: "Fast, secure cargo when it can't wait." },
-  { name: "Customs clearance", line: "Documentation, classification and SARS compliance, handled for you." },
-  { name: "Truck hire", line: "8 to 36 tonne trucks with professional drivers, for a trip or a contract." },
+  { icon: Truck, name: "Road freight", line: "Regional and cross-border trucking across the SADC region." },
+  { icon: Ship, name: "Sea freight", line: "Imports and exports through Durban, Cape Town and East London." },
+  { icon: Plane, name: "Air freight", line: "Fast, secure cargo when it can't wait." },
+  { icon: FileCheck2, name: "Customs clearance", line: "Documentation, classification and SARS compliance, handled for you." },
+  { icon: KeyRound, name: "Truck hire", line: "8 to 36 tonne trucks with professional drivers, for a trip or a contract." },
 ];
 
 const steps = [
-  { n: "01", title: "Tell us what's moving", text: "Where it's going from and to, and roughly how much. A short form or a WhatsApp message is enough." },
-  { n: "02", title: "We come back with a price", text: "A real person calls or messages you with a quote, within 24 hours." },
-  { n: "03", title: "We move it", text: "Our drivers and clearing team take it from there, and you hear from us if anything changes." },
+  { icon: MessageCircle, n: "01", title: "Tell us what's moving", text: "Where it's going from and to, and roughly how much. A short form or a WhatsApp message is enough." },
+  { icon: FileText, n: "02", title: "We come back with a price", text: "A real person calls or messages you with a quote, within 24 hours." },
+  { icon: Truck, n: "03", title: "We move it", text: "Our drivers and clearing team take it from there, and you hear from us if anything changes." },
 ];
 
 // Shown as plain names until each client has agreed to be listed (and ideally supplied a logo).
@@ -91,9 +91,14 @@ export default function Home() {
                 className="reveal group flex items-center justify-between gap-6 border-t border-black/10 py-7 last:border-b md:py-9"
                 style={{ ["--d" as string]: `${i * 60}ms` }}
               >
-                <div>
-                  <div className="text-2xl font-semibold tracking-[-0.025em] text-[#0B1628] md:text-4xl">{s.name}</div>
-                  <p className="mt-1.5 max-w-xl text-[15px] leading-snug text-[#6e6e73] md:text-base">{s.line}</p>
+                <div className="flex items-center gap-5 md:gap-7">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#1c5386]/10 text-[#1c5386] transition-colors duration-300 group-hover:bg-[#1c5386] group-hover:text-white md:h-16 md:w-16">
+                    <s.icon className="h-7 w-7" strokeWidth={1.75} />
+                  </span>
+                  <div>
+                    <div className="text-2xl font-semibold tracking-[-0.025em] text-[#0B1628] md:text-4xl">{s.name}</div>
+                    <p className="mt-1.5 max-w-xl text-[15px] leading-snug text-[#6e6e73] md:text-base">{s.line}</p>
+                  </div>
                 </div>
                 <ArrowRight className="h-6 w-6 shrink-0 text-[#1c5386] transition-transform duration-300 group-hover:translate-x-1.5" />
               </Link>
@@ -111,7 +116,12 @@ export default function Home() {
           <div className="mt-14 grid gap-12 md:mt-20 md:grid-cols-3 md:gap-10">
             {steps.map((s, i) => (
               <div key={s.n} className="reveal" style={{ ["--d" as string]: `${i * 90}ms` }}>
-                <div className="text-6xl font-light tracking-tight text-[#1c5386] md:text-7xl">{s.n}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-6xl font-light tracking-tight text-[#1c5386] md:text-7xl">{s.n}</div>
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#1c5386] shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+                    <s.icon className="h-6 w-6" strokeWidth={1.75} />
+                  </span>
+                </div>
                 <h3 className="mt-5 text-xl font-semibold tracking-[-0.02em] text-[#0B1628]">{s.title}</h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-[#6e6e73]">{s.text}</p>
               </div>
