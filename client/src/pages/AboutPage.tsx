@@ -1,7 +1,7 @@
 import { useReveal } from "@/hooks/useReveal";
 import { company } from "@/lib/company";
 import ClosingCta from "@/components/ClosingCta";
-import Photo from "@/components/Photo";
+import Slideshow, { type Slide } from "@/components/Slideshow";
 
 /**
  * People section: add the real team here and it appears automatically.
@@ -9,6 +9,14 @@ import Photo from "@/components/Photo";
  *   { name: "Full Name", role: "Founder & Director", photo: "/images/people/name.jpg", note: "One honest sentence about them." }
  */
 const people: { name: string; role: string; photo?: string; note?: string }[] = [];
+
+// Landscape photos only: they stay sharp when stretched across the full screen.
+const slides: Slide[] = [
+  { name: "road-low", alt: "A truck far down a wide road, seen from a low angle under a deep blue sky", position: "object-[35%_50%]" },
+  { name: "truck-road", alt: "A Rain Hub truck parked on the roadside with the open road ahead", position: "object-[72%_50%]" },
+  { name: "road-rear-a", alt: "The truck parked on the shoulder of a long straight road", position: "object-[40%_50%]" },
+  { name: "hero-road", alt: "A Rain Hub truck beside a quiet open road, with veld and hills behind", position: "object-[70%_55%]" },
+];
 
 const principles = [
   { title: "Straight answers", text: "A clear price, an honest timeline, and a phone call if either of them changes." },
@@ -20,42 +28,27 @@ export default function AboutPage() {
   useReveal();
   return (
     <main>
-      <section className="bg-white pb-20 pt-32 md:pb-28 md:pt-40">
-        <div className="mx-auto max-w-6xl px-6">
-          <h1 className="rise max-w-4xl text-5xl font-semibold leading-[1.03] tracking-[-0.035em] text-[#0B1628] md:text-7xl">
+      <Slideshow slides={slides} className="flex h-[88svh] min-h-[600px] items-end">
+        <div className="pointer-events-none relative mx-auto w-full max-w-6xl px-6 pb-20 text-white md:pb-24">
+          <h1 className="rise max-w-4xl text-[38px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl md:text-7xl">
             A Midrand logistics company, working across Southern Africa.
           </h1>
-          <p className="rise mt-6 max-w-2xl text-lg leading-relaxed text-[#6e6e73] md:text-xl" style={{ ["--d" as string]: "120ms" }}>
-            {company.name} moves cargo by road, sea and air, clears it through customs, and hires out trucks with drivers. We're
-            based at {company.addressLines[1].replace("Halfway House, ", "")}, and we run the whole job so you only have one number to call.
+          <p className="rise mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl" style={{ ["--d" as string]: "120ms" }}>
+            {company.name} moves cargo by road, sea and air, clears it through customs, and hires out trucks with drivers. We're based at{" "}
+            {company.addressLines[1].replace("Halfway House, ", "")}, and we run the whole job so you only have one number to call.
           </p>
         </div>
-      </section>
+      </Slideshow>
 
-      <section className="bg-white pb-20 md:pb-28">
-        <div className="mx-auto max-w-6xl space-y-4 px-6">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:col-span-2 md:h-[440px]">
-              <Photo name="road-low" alt="A truck far down a wide road, seen from a low angle under a deep blue sky" className="object-[35%_50%]" />
-            </div>
-            <div
-              className="reveal flex h-[260px] items-center justify-center rounded-3xl bg-[#1c5386] p-10 md:h-[440px]"
-              style={{ ["--d" as string]: "90ms" }}
-            >
-              <img src="/images/logo-white.png" alt="Rain Hub Logistics" className="w-full max-w-[280px]" />
-            </div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]">
-              <Photo name="truck-yard" alt="The truck parked on a quiet street, cab facing the camera" className="object-[50%_35%]" />
-            </div>
-            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]" style={{ ["--d" as string]: "90ms" }}>
-              <Photo name="bay-night-b" alt="A covered bay lit up at night, with the truck at the far end" className="object-[50%_62%]" />
-            </div>
-            <div className="reveal h-[300px] overflow-hidden rounded-3xl bg-[#F5F5F7] md:h-[340px]" style={{ ["--d" as string]: "180ms" }}>
-              <Photo name="road-rear-a" alt="The truck parked on the shoulder of a long straight road" className="object-[40%_50%]" />
-            </div>
-          </div>
+      {/* Brand band */}
+      <section className="bg-[#1c5386] py-14 md:py-16">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 md:flex-row md:justify-between">
+          <img src="/images/logo-white.png" alt="Rain Hub Logistics" className="w-[220px] md:w-[260px]" />
+          <p className="max-w-sm text-center text-lg leading-snug text-white/85 md:text-right">
+            {company.legalName}
+            <br />
+            Midrand, Johannesburg
+          </p>
         </div>
       </section>
 
