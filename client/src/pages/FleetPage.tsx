@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { useReveal } from "@/hooks/useReveal";
 import ClosingCta from "@/components/ClosingCta";
 import Photo from "@/components/Photo";
+import SadcMap from "@/components/SadcMap";
 
 const trucks = [
   {
@@ -102,6 +103,13 @@ export default function FleetPage() {
           <p className="reveal mt-8 max-w-xl text-[15px] leading-relaxed text-[#6e6e73]">
             Not sure which one you need? Tell us what's moving and where, and we'll recommend the right size.
           </p>
+        </div>
+      </section>
+
+      {/* Coverage: the 16 SADC member states */}
+      <section className="bg-[#0B1628] py-24 text-white md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <SadcMap />
         </div>
       </section>
 
