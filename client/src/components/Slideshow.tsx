@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import Photo from "@/components/Photo";
 
 export type Slide = { name: string; alt: string; position?: string };
@@ -22,9 +23,10 @@ export default function Slideshow({
 }) {
   const n = slides.length;
   const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [stopped, setStopped] = useState(false); // the visitor pressed pause
   const [reduce, setReduce] = useState(false);
   const startX = useRef<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // signed distance of slide k from the current slide, wrapped to the shortest way round
   const signed = (k: number, cur: number) => {
@@ -42,20 +44,24 @@ export default function Slideshow({
   }, []);
 
   useEffect(() => {
-    if (paused || reduce || n < 2) return;
-    const t = setInterval(() => setI((x) => (x + 1) % n), interval);
+    if (stopped || reduce || n < 2) return;
+    const t = setInterval(() => {
+      // Hold still while a mouse is over the slideshow. Asked at tick time, so there is no hover state to get stuck,
+      // and devices without hover (phones) are never held.
+      const hovering = window.matchMedia("(hover: hover)").matches && sectionRef.current?.matches(":hover");
+      if (!hovering) setI((x) => (x + 1) % n);
+    }, interval);
     return () => clearInterval(t);
-  }, [paused, reduce, n, interval, i]);
+  }, [stopped, reduce, n, interval, i]);
 
   const go = (d: number) => setI((x) => (x + d + n) % n);
 
   return (
     <section
+      ref={sectionRef}
       className={`relative isolate overflow-hidden bg-[#0B1628] ${className}`}
       aria-roledescription="carousel"
       aria-label="Photos of Rain Hub Logistics"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onPointerDown={(e) => (startX.current = e.clientX)}
       onPointerUp={(e) => {
         if (startX.current === null) return;
@@ -97,6 +103,16 @@ export default function Slideshow({
                 className={`h-2 rounded-full transition-all duration-500 ${k === i ? "w-7 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
               />
             ))}
+            {!reduce && (
+              <button
+                onClick={() => setStopped((v) => !v)}
+                aria-label={stopped ? "Play slideshow" : "Pause slideshow"}
+                aria-pressed={stopped}
+                className="ml-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/35"
+              >
+                {stopped ? <Play className="h-3.5 w-3.5 fill-current" /> : <Pause className="h-3.5 w-3.5 fill-current" />}
+              </button>
+            )}
           </div>
         </div>
       )}

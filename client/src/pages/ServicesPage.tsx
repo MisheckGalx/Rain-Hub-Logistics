@@ -4,6 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import ClosingCta from "@/components/ClosingCta";
 import ServiceVisual from "@/components/ServiceVisual";
+import Faq from "@/components/Faq";
 
 const services = [
   {
@@ -160,6 +161,15 @@ export default function ServicesPage() {
           </div>
         </section>
       ))}
+
+      <section className="bg-white py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[1fr_1.4fr] md:gap-20">
+          <h2 className="reveal text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1628] md:text-5xl">Common questions.</h2>
+          <div className="reveal" style={{ ["--d" as string]: "100ms" }}>
+            <Faq />
+          </div>
+        </div>
+      </section>
 
       <ClosingCta />
     </main>

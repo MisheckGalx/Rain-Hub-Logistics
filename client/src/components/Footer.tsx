@@ -16,7 +16,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Services</h4>
+            <p className="mb-3 text-xs font-semibold text-[#0B1628]">Services</p>
             <ul className="space-y-2 text-[13px]">
               {services.map((s) => (
                 <li key={s}>
@@ -27,7 +27,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Company</h4>
+            <p className="mb-3 text-xs font-semibold text-[#0B1628]">Company</p>
             <ul className="space-y-2 text-[13px]">
               <li><Link href="/about" className="hover:text-[#0B1628]">About</Link></li>
               <li><Link href="/fleet" className="hover:text-[#0B1628]">Fleet</Link></li>
@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-xs font-semibold text-[#0B1628]">Talk to us</h4>
+            <p className="mb-3 text-xs font-semibold text-[#0B1628]">Talk to us</p>
             <ul className="space-y-2 text-[13px]">
               <li><a href={company.phoneHref} className="hover:text-[#0B1628]">{company.phoneDisplay}</a></li>
               <li><a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="hover:text-[#0B1628]">WhatsApp</a></li>
@@ -48,7 +48,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-black/10 pt-5 text-xs">
-          © {new Date().getFullYear()} {company.legalName}. All rights reserved.
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+            <span>© {new Date().getFullYear()} {company.legalName}. All rights reserved.</span>
+            <Link href="/privacy" className="hover:text-[#0B1628]">Privacy policy</Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -25,7 +25,7 @@ export default function Navigation() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300 ${
-        scrolled || open ? "bg-white/85 shadow-[0_1px_0_rgba(0,0,0,0.06)]" : "bg-white/70"
+        scrolled || open ? "bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.06)]" : "bg-white/80"
       }`}
     >
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6" aria-label="Main">
@@ -39,7 +39,7 @@ export default function Navigation() {
               key={l.href}
               href={l.href}
               className={`text-[13px] tracking-tight transition-colors ${
-                location.startsWith(l.href) ? "text-[#0B1628]" : "text-[#0B1628]/60 hover:text-[#0B1628]"
+                location.startsWith(l.href) ? "text-[#0B1628]" : "text-[#0B1628]/75 hover:text-[#0B1628]"
               }`}
             >
               {l.label}

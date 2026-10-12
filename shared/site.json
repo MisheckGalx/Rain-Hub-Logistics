@@ -1,0 +1,87 @@
+{
+  "siteUrl": "https://rainhublogistics.com",
+  "siteName": "Rain Hub Logistics",
+  "pages": {
+    "/": {
+      "title": "Rain Hub Logistics — Freight, customs and truck hire from Midrand",
+      "description": "Rain Hub Logistics moves cargo across Southern Africa: road, sea and air freight, customs clearance and truck hire from Midrand, Johannesburg.",
+      "image": "/og/home.jpg",
+      "imageAlt": "A Rain Hub truck on an open road in Southern Africa",
+      "priority": "1.0"
+    },
+    "/services": {
+      "title": "Services — Rain Hub Logistics",
+      "description": "Road freight, sea freight, air freight, customs clearance and truck hire from one Midrand-based team.",
+      "image": "/og/services.jpg",
+      "imageAlt": "Rain Hub Logistics services: road, sea and air freight, customs clearance and truck hire",
+      "priority": "0.9"
+    },
+    "/fleet": {
+      "title": "Our fleet — Rain Hub Logistics",
+      "description": "Trucks from 8 to 36 tonnes with professional drivers, dispatched from Midrand for regional and cross-border loads across the SADC region.",
+      "image": "/og/fleet.jpg",
+      "imageAlt": "A Rain Hub box truck parked beside the road",
+      "priority": "0.8"
+    },
+    "/about": {
+      "title": "About — Rain Hub Logistics",
+      "description": "Rain Hub Logistics is a Midrand logistics company moving cargo by road, sea and air across Southern Africa.",
+      "image": "/og/about.jpg",
+      "imageAlt": "A Rain Hub truck far down a long straight road",
+      "priority": "0.6"
+    },
+    "/clients": {
+      "title": "Clients — Rain Hub Logistics",
+      "description": "Businesses across cable, machinery and heavy industry that rely on Rain Hub Logistics to move their freight.",
+      "image": "/og/clients.jpg",
+      "imageAlt": "Rain Hub Logistics trucks on the road",
+      "priority": "0.5"
+    },
+    "/contact": {
+      "title": "Get a quote — Rain Hub Logistics",
+      "description": "Request a freight quote from Rain Hub Logistics. Call, WhatsApp or send the details and we'll come back with a price.",
+      "image": "/og/contact.jpg",
+      "imageAlt": "Get a freight quote from Rain Hub Logistics",
+      "priority": "0.9"
+    },
+    "/privacy": {
+      "title": "Privacy policy — Rain Hub Logistics",
+      "description": "How Rain Hub Logistics collects, uses and protects your personal information.",
+      "image": "/og/home.jpg",
+      "imageAlt": "Rain Hub Logistics",
+      "priority": "0.2"
+    }
+  },
+  "business": {
+    "legalName": "Rain Hub Logistics PTY LTD",
+    "phoneDisplay": "010 085 0769",
+    "phoneE164": "+27100850769",
+    "whatsappNumber": "27100850769",
+    "email": "info@rainhubsolutions.co.za",
+    "street": "1070 Old Pretoria Road, Halfway House",
+    "locality": "Midrand",
+    "region": "Gauteng",
+    "postalCode": "1685",
+    "country": "ZA",
+    "hours": [
+      {
+        "days": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "07:00",
+        "closes": "18:00"
+      },
+      {
+        "days": [
+          "Saturday"
+        ],
+        "opens": "08:00",
+        "closes": "13:00"
+      }
+    ]
+  }
+}
