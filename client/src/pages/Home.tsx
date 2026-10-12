@@ -3,6 +3,7 @@ import { ArrowRight, FileCheck2, FileText, KeyRound, MessageCircle, Plane, Ship,
 import { useReveal } from "@/hooks/useReveal";
 import { company, whatsappUrl } from "@/lib/company";
 import Photo from "@/components/Photo";
+import OpenNow from "@/components/OpenNow";
 
 const services = [
   { icon: Truck, name: "Road freight", line: "Regional and cross-border trucking across the SADC region." },
@@ -32,7 +33,7 @@ export default function Home() {
             and pinned left so the truck slides right and the copy sits on open road. */}
         <div className="relative h-[46svh] min-h-[280px] w-full md:absolute md:inset-y-0 md:left-0 md:-z-20 md:h-auto md:w-[135%]">
           <picture>
-            <source srcSet="/images/home-hero.webp" type="image/webp" />
+            <source srcSet="/images/home-hero-sm.webp 640w, /images/home-hero.webp 1280w" sizes="100vw" type="image/webp" />
             <img
               src="/images/home-hero.jpeg"
               alt="A Rain Hub truck parked beside a quiet open road, with veld and hills behind"
@@ -71,7 +72,7 @@ export default function Home() {
             </a>
           </div>
           <p className="rise mt-10 text-[13px] text-white/60" style={{ ["--d" as string]: "360ms" }}>
-            Midrand, Johannesburg · Mon–Fri 07:00–18:00
+            Midrand, Johannesburg · <OpenNow />
           </p>
         </div>
       </section>
@@ -162,7 +163,7 @@ export default function Home() {
       <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-6xl px-6 text-center">
           <p className="reveal text-sm text-[#6e6e73]">Trusted by businesses across manufacturing, machinery and heavy industry</p>
-          <div className="reveal mt-8 flex flex-wrap justify-center gap-x-12 gap-y-4 text-xl font-semibold tracking-tight text-black/35 md:text-2xl">
+          <div className="reveal mt-8 flex flex-wrap justify-center gap-x-12 gap-y-4 text-xl font-semibold tracking-tight text-black/55 md:text-2xl">
             {clients.map((c) => (
               <span key={c}>{c}</span>
             ))}

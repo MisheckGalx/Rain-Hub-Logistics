@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 import { Link } from "wouter";
 import { company, whatsappUrl } from "@/lib/company";
+import OpenNow from "@/components/OpenNow";
 
 const serviceOptions = ["Road freight", "Sea freight", "Air freight", "Customs clearance", "Truck hire", "Not sure yet"];
 
@@ -9,6 +11,14 @@ const field =
 const label = "mb-1.5 block text-[13px] font-medium text-[#0B1628]";
 
 type Status = "idle" | "sending" | "done" | "error";
+
+// Optional bot check. Set VITE_TURNSTILE_SITE_KEY (and TURNSTILE_SECRET on the server) to switch it on.
+const TURNSTILE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+declare global {
+  interface Window {
+    turnstile?: { render: (el: HTMLElement, o: Record<string, unknown>) => string; reset: (id?: string) => void };
+  }
+}
 
 // /contact?service=Truck%20hire preselects the service the visitor came from
 function initialService() {
@@ -20,6 +30,21 @@ export default function ContactPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState({ name: "", phone: "" });
+  const tsRef = useRef<HTMLDivElement>(null);
+  const tsId = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!TURNSTILE_KEY) return;
+    const mount = () => {
+      if (tsRef.current && window.turnstile && !tsId.current) tsId.current = window.turnstile.render(tsRef.current, { sitekey: TURNSTILE_KEY, theme: "light" });
+    };
+    if (window.turnstile) return mount();
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    s.async = true;
+    s.onload = mount;
+    document.head.appendChild(s);
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,9 +62,11 @@ export default function ContactPage() {
       if (!res.ok || !json.ok) throw new Error(json.error || "Something went wrong.");
       setSentTo({ name: data.name.split(" ")[0], phone: data.phone });
       setStatus("done");
+      try { track("quote_submitted", { service: data.service }); } catch { /* ignore */ }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setStatus("error");
+      if (tsId.current) window.turnstile?.reset(tsId.current); // the bot-check token is single-use
     }
   }
 
@@ -81,7 +108,7 @@ export default function ContactPage() {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label htmlFor="email" className={label}>Email <span className="font-normal text-black/40">(optional)</span></label>
+                    <label htmlFor="email" className={label}>Email <span className="font-normal text-black/55">(optional)</span></label>
                     <input id="email" name="email" type="email" autoComplete="email" className={field} />
                   </div>
                   <div>
@@ -93,6 +120,15 @@ export default function ContactPage() {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="contactVia" className={label}>Best way to reach you</label>
+                  <select id="contactVia" name="contactVia" defaultValue="Call me" className={field}>
+                    <option>Call me</option>
+                    <option>WhatsApp me</option>
+                    <option>Email me</option>
+                  </select>
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-2">
@@ -107,7 +143,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="details" className={label}>What are you moving? <span className="font-normal text-black/40">(optional)</span></label>
+                  <label htmlFor="details" className={label}>What are you moving? <span className="font-normal text-black/55">(optional)</span></label>
                   <textarea
                     id="details"
                     name="details"
@@ -122,6 +158,8 @@ export default function ContactPage() {
                   <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
                 </div>
 
+                {TURNSTILE_KEY && <div ref={tsRef} />}
+
                 {status === "error" && (
                   <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
                 )}
@@ -133,6 +171,10 @@ export default function ContactPage() {
                 >
                   {status === "sending" ? "Sending…" : "Request a quote"}
                 </button>
+                <p className="text-[13px] leading-snug text-[#6e6e73]">
+                  By sending this you agree that we may contact you about your enquiry. See our{" "}
+                  <Link href="/privacy" className="text-[#1c5386] underline underline-offset-2">privacy policy</Link>.
+                </p>
               </form>
             )}
           </div>
@@ -162,6 +204,7 @@ export default function ContactPage() {
                   <div key={d} className="flex justify-between gap-4"><dt>{d}</dt><dd className="text-[#6e6e73]">{h}</dd></div>
                 ))}
               </dl>
+              <OpenNow className="mt-2 text-[13px] text-[#6e6e73]" />
             </div>
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wide text-[#6e6e73]">Find us</h2>
